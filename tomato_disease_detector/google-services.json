@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "987949308230",
+    "project_id": "tomatodiseasedetector-abb6d",
+    "storage_bucket": "tomatodiseasedetector-abb6d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:987949308230:android:acedfa9d516ef80c34ad47",
+        "android_client_info": {
+          "package_name": "com.example.tomato_disease_detector"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "987949308230-jja2h4gfeh6btasn6p70tcdqk4d5o2ei.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tomato_disease_detector",
+            "certificate_hash": "222e85681f8fbc69a8bca6fba1b5128fcbe5b8b7"
+          }
+        },
+        {
+          "client_id": "987949308230-m4ant4l6eui1hii5mgovk7ouem12igva.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDs6O3Hpf0egn2n55J48t7PLopK6Bcny2k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "987949308230-m4ant4l6eui1hii5mgovk7ouem12igva.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

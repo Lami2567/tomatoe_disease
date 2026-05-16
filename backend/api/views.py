@@ -17,9 +17,9 @@ RECOMMENDATIONS = {
     'Tomato_Leaf_Mold': 'Increase greenhouse ventilation, keep leaves dry, and remove affected leaves before applying a suitable fungicide.',
     'Tomato_Septoria_leaf_spot': 'Remove spotted leaves, keep soil from splashing, stake plants, and rotate away from nightshades next season.',
     'Tomato_Spider_mites_Two_spotted_spider_mite': 'Rinse leaf undersides, reduce plant stress, and use miticide or horticultural oil for severe infestations.',
-    'Tomato_Target_spot': 'Remove infected debris, improve spacing, and use preventive fungicide where target spot is recurring.',
-    'Tomato_Tomato_Yellow_Leaf_Curl_Virus': 'Control whiteflies, remove infected plants, and use resistant varieties for future planting.',
-    'Tomato_Tomato_mosaic_virus': 'Remove infected plants, disinfect tools, wash hands after handling plants, and avoid tobacco contamination.',
+    'Tomato__Target_Spot': 'Remove infected debris, improve spacing, and use preventive fungicide where target spot is recurring.',
+    'Tomato__Tomato_YellowLeaf__Curl_Virus': 'Control whiteflies, remove infected plants, and use resistant varieties for future planting.',
+    'Tomato__Tomato_mosaic_virus': 'Remove infected plants, disinfect tools, wash hands after handling plants, and avoid tobacco contamination.',
     'Tomato_healthy': 'No disease detected. Keep a steady watering schedule, scout leaves twice a week, and maintain good airflow.',
 }
 

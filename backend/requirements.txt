@@ -2,9 +2,8 @@ Django==4.2.7
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.0
 django-cors-headers==4.3.1
-dj-rest-auth==5.0.2
-django-allauth==0.57.0
 Pillow==10.1.0
-tensorflow==2.13.0          # or tflite-runtime if no training needed
+tensorflow-cpu==2.15.1
 python-dotenv==1.0.0
-psycopg2-binary==2.9.9      # or use sqlite for dev
+gunicorn==22.0.0
+google-auth==2.29.0

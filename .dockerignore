@@ -1,0 +1,11 @@
+.git
+db.sqlite3
+media
+tomato_disease_detector/.dart_tool
+tomato_disease_detector/build
+tomato_disease_detector/android/.gradle
+tomato_disease_detector/android/app/build
+tomato_disease_detector/ios/Flutter/ephemeral
+**/__pycache__
+**/*.pyc
+*.log

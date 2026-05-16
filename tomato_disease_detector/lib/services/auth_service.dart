@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,11 +14,7 @@ class AuthService extends ChangeNotifier {
   );
 
   final ApiService _api = ApiService();
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: ['email', 'profile'],
-    clientId: _webClientId,
-    serverClientId: _webClientId,
-  );
+  late final GoogleSignIn _googleSignIn = _createGoogleSignIn();
 
   User? _user;
   String? _accessToken;
@@ -115,5 +111,19 @@ class AuthService extends ChangeNotifier {
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
+  }
+
+  GoogleSignIn _createGoogleSignIn() {
+    if (kIsWeb) {
+      return GoogleSignIn(
+        scopes: const ['email', 'profile'],
+        clientId: _webClientId,
+      );
+    }
+
+    return GoogleSignIn(
+      scopes: const ['email', 'profile'],
+      serverClientId: _webClientId,
+    );
   }
 }

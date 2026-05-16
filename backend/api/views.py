@@ -6,6 +6,7 @@ from .serializers import GoogleAuthSerializer, ScanHistorySerializer, UserSerial
 from .inference import classifier
 from .models import ScanHistory
 from .authentication import verify_google_token, get_or_create_user, get_tokens_for_user
+from PIL import Image, UnidentifiedImageError
 import tempfile
 import os
 
@@ -55,8 +56,6 @@ class ScanUploadView(APIView):
         image_file = request.FILES.get('image')
         if not image_file:
             return Response({'error': 'No image provided'}, status=status.HTTP_400_BAD_REQUEST)
-        if not image_file.content_type.startswith('image/'):
-            return Response({'error': 'Upload must be an image'}, status=status.HTTP_400_BAD_REQUEST)
         # Save uploaded file temporarily for inference
         suffix = os.path.splitext(image_file.name)[1] or '.jpg'
         with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
@@ -65,13 +64,18 @@ class ScanUploadView(APIView):
             tmp_path = tmp.name
         # Run inference
         try:
+            with Image.open(tmp_path) as img:
+                img.verify()
             disease, confidence = classifier.predict(tmp_path)
+        except (UnidentifiedImageError, OSError):
+            return Response({'error': 'Upload must be an image'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as exc:
             return Response({'error': f'Inference failed: {exc}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         finally:
             if os.path.exists(tmp_path):
                 os.unlink(tmp_path)
         # Save scan
+        image_file.seek(0)
         scan = ScanHistory.objects.create(
             user=request.user,
             image=image_file,

@@ -116,13 +116,13 @@ class AuthService extends ChangeNotifier {
   GoogleSignIn _createGoogleSignIn() {
     if (kIsWeb) {
       return GoogleSignIn(
-        scopes: const ['email', 'profile'],
+        scopes: const ['email'],
         clientId: _webClientId,
       );
     }
 
     return GoogleSignIn(
-      scopes: const ['email', 'profile'],
+      scopes: const ['email'],
       serverClientId: _webClientId,
     );
   }

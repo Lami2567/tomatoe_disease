@@ -4,13 +4,6 @@ from importlib import import_module
 import numpy as np
 from PIL import Image, ImageOps
 
-try:
-    import tensorflow as tf
-except ImportError:
-    Interpreter = import_module('tflite_runtime.interpreter').Interpreter
-else:
-    Interpreter = tf.lite.Interpreter
-
 MODEL_PATH = Path(__file__).resolve().parent.parent / 'models' / 'tomato_disease_model.tflite'
 
 CLASS_NAMES = [
@@ -29,6 +22,18 @@ CLASS_NAMES = [
 class TomatoDiseaseClassifier:
     def __init__(self):
         self._interpreter = None
+        self._interpreter_class = None
+
+    def _load_interpreter_class(self):
+        if self._interpreter_class is not None:
+            return self._interpreter_class
+        try:
+            import tensorflow as tf
+        except ImportError:
+            self._interpreter_class = import_module('tflite_runtime.interpreter').Interpreter
+        else:
+            self._interpreter_class = tf.lite.Interpreter
+        return self._interpreter_class
 
     def _lazy_init(self):
         if self._interpreter is not None:
@@ -37,6 +42,7 @@ class TomatoDiseaseClassifier:
             raise FileNotFoundError(
                 f"Model file not found at {MODEL_PATH}. Place tomato_disease_model.tflite in backend/models/."
             )
+        Interpreter = self._load_interpreter_class()
         self._interpreter = Interpreter(model_path=str(MODEL_PATH))
         self._interpreter.allocate_tensors()
         self.input_details = self._interpreter.get_input_details()

@@ -23,13 +23,14 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => AuthService(initialToken: initialToken),
       child: MaterialApp(
-        title: 'AgroSight',
+        title: 'AgroScan',
         debugShowCheckedModeBanner: false,
         theme: buildAgroTheme(),
         home: Consumer<AuthService>(
           builder: (context, auth, _) {
             if (auth.isLoading) {
-              return const Scaffold(body: Center(child: CircularProgressIndicator()));
+              return const Scaffold(
+                  body: Center(child: CircularProgressIndicator()));
             }
             if (auth.isAuthenticated) {
               return const DashboardScreen();

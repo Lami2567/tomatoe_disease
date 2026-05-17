@@ -10,7 +10,8 @@ import 'api_service.dart';
 class AuthService extends ChangeNotifier {
   static const _webClientId = String.fromEnvironment(
     'GOOGLE_WEB_CLIENT_ID',
-    defaultValue: '987949308230-nk5l7n528fsgr1i226t5j6jv47im8odh.apps.googleusercontent.com',
+    defaultValue:
+        '987949308230-nk5l7n528fsgr1i226t5j6jv47im8odh.apps.googleusercontent.com',
   );
 
   final ApiService _api = ApiService();
@@ -56,7 +57,8 @@ class AuthService extends ChangeNotifier {
       final googleAuth = await googleUser.authentication;
       final idToken = googleAuth.idToken;
       if (idToken == null) {
-        throw Exception('Google did not return an ID token. Check OAuth client configuration.');
+        throw Exception(
+            'Google did not return an ID token. Check OAuth client configuration.');
       }
 
       final payload = await _api.loginWithGoogleToken(idToken);
@@ -66,14 +68,16 @@ class AuthService extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('access_token', payload.accessToken);
       await prefs.setString('refresh_token', payload.refreshToken);
-      await prefs.setString('user', jsonEncode({
-        'id': payload.user.id,
-        'username': payload.user.username,
-        'email': payload.user.email,
-        'first_name': payload.user.firstName,
-        'last_name': payload.user.lastName,
-        'full_name': payload.user.fullName,
-      }));
+      await prefs.setString(
+          'user',
+          jsonEncode({
+            'id': payload.user.id,
+            'username': payload.user.username,
+            'email': payload.user.email,
+            'first_name': payload.user.firstName,
+            'last_name': payload.user.lastName,
+            'full_name': payload.user.fullName,
+          }));
       _lastError = null;
     } catch (error) {
       _lastError = error.toString();
@@ -91,7 +95,11 @@ class AuthService extends ChangeNotifier {
       notifyListeners();
     } catch (error) {
       _lastError = error.toString();
-      await logout(signOutGoogle: false);
+      final prefs = await SharedPreferences.getInstance();
+      final savedUser = prefs.getString('user');
+      if (savedUser == null) {
+        await logout(signOutGoogle: false);
+      }
     }
   }
 

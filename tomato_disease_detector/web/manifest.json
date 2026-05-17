@@ -1,11 +1,11 @@
 {
-    "name": "tomato_disease_detector",
-    "short_name": "tomato_disease_detector",
+    "name": "AgroScan",
+    "short_name": "AgroScan",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "AI tomato leaf disease scanning.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

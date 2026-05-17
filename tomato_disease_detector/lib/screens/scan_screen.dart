@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../app_theme.dart';
 import '../services/api_service.dart';
+import '../services/leaf_validation_service.dart';
 
 class ScanScreen extends StatefulWidget {
   final VoidCallback? onScanComplete;
@@ -18,6 +19,7 @@ class ScanScreen extends StatefulWidget {
 class _ScanScreenState extends State<ScanScreen> {
   final ImagePicker _picker = ImagePicker();
   final ApiService _api = ApiService();
+  final LeafValidationService _leafValidator = LeafValidationService();
 
   Uint8List? _imageBytes;
   bool _isLoading = false;
@@ -26,7 +28,8 @@ class _ScanScreenState extends State<ScanScreen> {
 
   Future<void> _pickImage(ImageSource source) async {
     try {
-      final image = await _picker.pickImage(source: source, maxWidth: 1280, maxHeight: 1280, imageQuality: 92);
+      final image = await _picker.pickImage(
+          source: source, maxWidth: 1280, maxHeight: 1280, imageQuality: 92);
       if (image == null) return;
       final bytes = await image.readAsBytes();
       setState(() {
@@ -46,6 +49,14 @@ class _ScanScreenState extends State<ScanScreen> {
       _error = null;
     });
     try {
+      final validation = await _leafValidator.validateTomatoLeaf(image);
+      if (!validation.isLeaf) {
+        final labels = validation.labels.isEmpty
+            ? 'no confident labels'
+            : validation.labels.take(3).join(', ');
+        throw Exception(
+            'Please upload a clear tomato leaf only. Vision check saw: $labels.');
+      }
       final result = await _api.uploadScan(image);
       setState(() => _result = result);
       widget.onScanComplete?.call();
@@ -69,7 +80,8 @@ class _ScanScreenState extends State<ScanScreen> {
       context: context,
       showDragHandle: true,
       backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       builder: (context) => SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
@@ -77,7 +89,8 @@ class _ScanScreenState extends State<ScanScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Choose leaf image', style: Theme.of(context).textTheme.titleLarge),
+              Text('Choose leaf image',
+                  style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 12),
               _SourceTile(
                 icon: Icons.photo_camera_outlined,
@@ -160,24 +173,30 @@ class _ScanEntryView extends StatelessWidget {
         Container(
           constraints: const BoxConstraints(minHeight: 280),
           padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(color: AgroColors.sky, borderRadius: BorderRadius.circular(8)),
+          decoration: BoxDecoration(
+              color: AgroColors.sky, borderRadius: BorderRadius.circular(8)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (imageBytes != null)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.memory(imageBytes!, height: 220, width: double.infinity, fit: BoxFit.cover),
+                  child: Image.memory(imageBytes!,
+                      height: 220, width: double.infinity, fit: BoxFit.cover),
                 )
               else
                 Container(
                   width: 92,
                   height: 92,
-                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
-                  child: const Icon(Icons.eco_outlined, size: 44, color: AgroColors.field),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8)),
+                  child: const Icon(Icons.eco_outlined,
+                      size: 44, color: AgroColors.field),
                 ),
               const SizedBox(height: 20),
-              Text('Scan a tomato leaf', style: Theme.of(context).textTheme.headlineMedium),
+              Text('Scan a tomato leaf',
+                  style: Theme.of(context).textTheme.headlineMedium),
               const SizedBox(height: 8),
               Text(
                 'Use a clear image with one leaf centered. The backend will preprocess it to 224 x 224 for TFLite inference.',
@@ -188,7 +207,11 @@ class _ScanEntryView extends StatelessWidget {
               ElevatedButton.icon(
                 onPressed: isLoading ? null : onPick,
                 icon: isLoading
-                    ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2, color: Colors.white))
                     : const Icon(Icons.add_a_photo_outlined),
                 label: Text(isLoading ? 'Analyzing leaf' : 'Choose image'),
               ),
@@ -204,7 +227,12 @@ class _ScanEntryView extends StatelessWidget {
                 children: [
                   const Icon(Icons.error_outline, color: AgroColors.danger),
                   const SizedBox(width: 10),
-                  Expanded(child: Text(error!, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AgroColors.danger))),
+                  Expanded(
+                      child: Text(error!,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: AgroColors.danger))),
                 ],
               ),
             ),
@@ -249,15 +277,22 @@ class _ResultView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(color: statusColor.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8)),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                      color: statusColor.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(8)),
                   child: Text(
                     scan.isHealthy ? 'Healthy leaf' : 'Disease detected',
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(color: statusColor),
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelLarge
+                        ?.copyWith(color: statusColor),
                   ),
                 ),
                 const SizedBox(height: 14),
-                Text(scan.readableDisease, style: Theme.of(context).textTheme.headlineMedium),
+                Text(scan.readableDisease,
+                    style: Theme.of(context).textTheme.headlineMedium),
                 const SizedBox(height: 8),
                 LinearProgressIndicator(
                   minHeight: 8,
@@ -267,7 +302,8 @@ class _ResultView extends StatelessWidget {
                   backgroundColor: statusColor.withValues(alpha: 0.12),
                 ),
                 const SizedBox(height: 8),
-                Text('${scan.confidenceLabel} model confidence', style: Theme.of(context).textTheme.bodyMedium),
+                Text('${scan.confidenceLabel} model confidence',
+                    style: Theme.of(context).textTheme.bodyMedium),
               ],
             ),
           ),
@@ -282,17 +318,22 @@ class _ResultView extends StatelessWidget {
                 Container(
                   width: 40,
                   height: 40,
-                  decoration: BoxDecoration(color: AgroColors.sand, borderRadius: BorderRadius.circular(8)),
-                  child: const Icon(Icons.lightbulb_outline, color: AgroColors.clay),
+                  decoration: BoxDecoration(
+                      color: AgroColors.sand,
+                      borderRadius: BorderRadius.circular(8)),
+                  child: const Icon(Icons.lightbulb_outline,
+                      color: AgroColors.clay),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Recommendation', style: Theme.of(context).textTheme.titleMedium),
+                      Text('Recommendation',
+                          style: Theme.of(context).textTheme.titleMedium),
                       const SizedBox(height: 6),
-                      Text(result.recommendation, style: Theme.of(context).textTheme.bodyMedium),
+                      Text(result.recommendation,
+                          style: Theme.of(context).textTheme.bodyMedium),
                     ],
                   ),
                 ),
@@ -301,9 +342,13 @@ class _ResultView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 18),
-        ElevatedButton.icon(onPressed: onScanAgain, icon: const Icon(Icons.photo_camera_outlined), label: const Text('Scan another leaf')),
+        ElevatedButton.icon(
+            onPressed: onScanAgain,
+            icon: const Icon(Icons.photo_camera_outlined),
+            label: const Text('Scan another leaf')),
         const SizedBox(height: 8),
-        OutlinedButton(onPressed: onReset, child: const Text('Back to scan start')),
+        OutlinedButton(
+            onPressed: onReset, child: const Text('Back to scan start')),
       ],
     );
   }
@@ -330,7 +375,8 @@ class _SourceTile extends StatelessWidget {
       leading: Container(
         width: 42,
         height: 42,
-        decoration: BoxDecoration(color: AgroColors.sky, borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(
+            color: AgroColors.sky, borderRadius: BorderRadius.circular(8)),
         child: Icon(icon, color: AgroColors.field),
       ),
       title: Text(title, style: Theme.of(context).textTheme.titleMedium),

@@ -76,12 +76,18 @@ class _ImagePanel extends StatelessWidget {
                 const Spacer(),
                 Text(
                   'Protect each harvest with faster field diagnosis.',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Colors.white),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineMedium
+                      ?.copyWith(color: Colors.white),
                 ),
                 const SizedBox(height: 10),
                 Text(
                   'Designed for farmers and agronomy teams who need clear tomato leaf results without noisy dashboards.',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white.withValues(alpha: 0.88)),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(color: Colors.white.withValues(alpha: 0.88)),
                 ),
               ],
             ),
@@ -106,7 +112,8 @@ class _SignInPanel extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Welcome back', style: Theme.of(context).textTheme.headlineMedium),
+            Text('Welcome back',
+                style: Theme.of(context).textTheme.headlineMedium),
             const SizedBox(height: 8),
             Text(
               'Continue to scan tomato leaves, review disease history, and monitor field health.',
@@ -131,7 +138,8 @@ class _SignInPanel extends StatelessWidget {
                   ? const SizedBox(
                       width: 18,
                       height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: Colors.white),
                     )
                   : const Icon(Icons.g_mobiledata_rounded, size: 28),
               label: const Text('Continue with Google'),
@@ -140,7 +148,10 @@ class _SignInPanel extends StatelessWidget {
             Text(
               'Backend: ${ApiService.baseUrl}',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 12),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(fontSize: 12),
             ),
           ],
         ),
@@ -169,8 +180,9 @@ class _BrandMark extends StatelessWidget {
         ),
         const SizedBox(width: 10),
         const Text(
-          'AgroSight',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 18),
+          'AgroScan',
+          style: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.w800, fontSize: 18),
         ),
       ],
     );

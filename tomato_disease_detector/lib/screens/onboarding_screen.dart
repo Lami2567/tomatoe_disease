@@ -42,8 +42,11 @@ class OnboardingScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'AgroSight',
-                            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                            'AgroScan',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineLarge
+                                ?.copyWith(
                                   color: Colors.white,
                                   fontSize: 46,
                                 ),
@@ -51,7 +54,10 @@ class OnboardingScreen extends StatelessWidget {
                           const SizedBox(height: 10),
                           Text(
                             'Scan tomato leaves, identify disease pressure, and keep every field decision in one calm dashboard.',
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.copyWith(
                                   color: Colors.white.withValues(alpha: 0.88),
                                   fontSize: 17,
                                 ),
@@ -69,7 +75,8 @@ class OnboardingScreen extends StatelessWidget {
                           if (context.mounted) {
                             Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (_) => const AuthScreen()),
+                              MaterialPageRoute(
+                                  builder: (_) => const AuthScreen()),
                             );
                           }
                         },
@@ -114,8 +121,9 @@ class _BrandMark extends StatelessWidget {
         ),
         const SizedBox(width: 10),
         Text(
-          'AgroSight',
-          style: TextStyle(color: color, fontWeight: FontWeight.w800, fontSize: 18),
+          'AgroScan',
+          style: TextStyle(
+              color: color, fontWeight: FontWeight.w800, fontSize: 18),
         ),
       ],
     );

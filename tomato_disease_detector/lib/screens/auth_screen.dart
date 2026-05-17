@@ -129,7 +129,7 @@ class _SignInPanel extends StatelessWidget {
                       } catch (error) {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Login failed: $error')),
+                            SnackBar(content: Text(error.toString())),
                           );
                         }
                       }

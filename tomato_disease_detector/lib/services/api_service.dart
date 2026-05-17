@@ -35,9 +35,19 @@ class ScanUploadResult {
 
 class ApiService {
   static const _configuredBaseUrl = String.fromEnvironment('API_BASE_URL');
-  static final String baseUrl = _configuredBaseUrl.isNotEmpty
-      ? _configuredBaseUrl
-      : 'https://eligible-henriette-laneglo-afa9e80d.koyeb.app/api';
+  static final String baseUrl = _normalizeBaseUrl(
+    _configuredBaseUrl.isNotEmpty
+        ? _configuredBaseUrl
+        : 'https://eligible-henriette-laneglo-afa9e80d.koyeb.app/api',
+  );
+
+  static String _normalizeBaseUrl(String url) {
+    final trimmed = url.trim();
+    if (trimmed.endsWith('/')) {
+      return trimmed.substring(0, trimmed.length - 1);
+    }
+    return trimmed;
+  }
 
   Future<Map<String, String>> _authHeaders(
       {bool json = true, String? token}) async {
@@ -64,9 +74,7 @@ class ApiService {
       return null;
     }
 
-    final body = response.body.isEmpty
-        ? <String, dynamic>{}
-        : jsonDecode(response.body) as Map<String, dynamic>;
+    final body = _tryDecodeMap(response);
     final accessToken = body['access'] as String?;
     if (accessToken == null || accessToken.isEmpty) return null;
     await prefs.setString('access_token', accessToken);
@@ -155,22 +163,47 @@ class ApiService {
   }
 
   Map<String, dynamic> _decodeMap(http.Response response) {
-    final body = response.body.isEmpty
-        ? <String, dynamic>{}
-        : jsonDecode(response.body) as Map<String, dynamic>;
+    final body = _tryDecodeMap(response);
     if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw Exception(body['error'] ??
-          body['detail'] ??
-          'Request failed with ${response.statusCode}');
+      throw Exception(
+          body['error'] ?? body['detail'] ?? _fallbackErrorMessage(response));
     }
     return body;
   }
 
   List<Map<String, dynamic>> _decodeList(http.Response response) {
     if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw Exception('Request failed with ${response.statusCode}');
+      throw Exception(_fallbackErrorMessage(response));
     }
-    final body = response.body.isEmpty ? [] : jsonDecode(response.body) as List;
-    return body.cast<Map<String, dynamic>>();
+    try {
+      final body =
+          response.body.isEmpty ? [] : jsonDecode(response.body) as List;
+      return body.cast<Map<String, dynamic>>();
+    } on FormatException {
+      throw Exception(_fallbackErrorMessage(response));
+    }
+  }
+
+  Map<String, dynamic> _tryDecodeMap(http.Response response) {
+    if (response.body.isEmpty) return <String, dynamic>{};
+    try {
+      final decoded = jsonDecode(response.body);
+      if (decoded is Map<String, dynamic>) return decoded;
+      return {'detail': 'Unexpected API response format.'};
+    } on FormatException {
+      return {'detail': _fallbackErrorMessage(response)};
+    }
+  }
+
+  String _fallbackErrorMessage(http.Response response) {
+    final contentType = response.headers['content-type'] ?? '';
+    final looksLikeHtml = contentType.contains('text/html') ||
+        response.body.trimLeft().startsWith('<!DOCTYPE') ||
+        response.body.trimLeft().startsWith('<html');
+
+    if (looksLikeHtml) {
+      return 'Backend URL is not serving the AgroScan API. Check API_BASE_URL: $baseUrl';
+    }
+    return 'Request failed with ${response.statusCode}';
   }
 }

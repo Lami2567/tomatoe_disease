@@ -34,9 +34,8 @@ def load_class_names():
 
 CLASS_NAMES = load_class_names()
 HEALTHY_CLASS_NAME = 'Tomato_healthy'
-HEALTHY_CLOSE_CALL_MARGIN = 0.15
-LOW_DISEASE_CONFIDENCE_THRESHOLD = 0.65
-MIN_HEALTHY_FALLBACK_CONFIDENCE = 0.25
+HEALTHY_CLOSE_CALL_MARGIN = 0.12
+MIN_HEALTHY_FALLBACK_CONFIDENCE = 0.45
 
 class TomatoDiseaseClassifier:
     def __init__(self):
@@ -131,12 +130,9 @@ class TomatoDiseaseClassifier:
         if HEALTHY_CLASS_NAME in CLASS_NAMES and disease_class != HEALTHY_CLASS_NAME:
             healthy_idx = CLASS_NAMES.index(HEALTHY_CLASS_NAME)
             healthy_confidence = float(scores[healthy_idx])
-            is_close_to_healthy = confidence - healthy_confidence <= HEALTHY_CLOSE_CALL_MARGIN
-            is_low_confidence_disease = (
-                confidence < LOW_DISEASE_CONFIDENCE_THRESHOLD
-                and healthy_confidence >= MIN_HEALTHY_FALLBACK_CONFIDENCE
-            )
-            if is_close_to_healthy or is_low_confidence_disease:
+            is_supported_healthy = healthy_confidence >= MIN_HEALTHY_FALLBACK_CONFIDENCE
+            is_close_to_top = confidence - healthy_confidence <= HEALTHY_CLOSE_CALL_MARGIN
+            if is_supported_healthy and is_close_to_top:
                 return HEALTHY_CLASS_NAME, healthy_confidence
 
         return disease_class, confidence

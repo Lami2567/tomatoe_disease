@@ -104,25 +104,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: AgroColors.danger)),
                       ],
                     ),
-                    const SizedBox(height: 18),
-                    Card(
-                      child: Column(
-                        children: [
-                          _ProfileRow(
-                              icon: Icons.cloud_done_outlined,
-                              title: 'Backend API',
-                              subtitle: ApiService.baseUrl),
-                          Divider(
-                              height: 1,
-                              color: AgroColors.ink.withValues(alpha: 0.08)),
-                          const _ProfileRow(
-                              icon: Icons.eco_outlined,
-                              title: 'Crop focus',
-                              subtitle:
-                                  '10-class tomato leaf disease classifier'),
-                        ],
-                      ),
-                    ),
                     const SizedBox(height: 22),
                     OutlinedButton.icon(
                       onPressed: () async {
@@ -190,30 +171,6 @@ class _ProfileMetric extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _ProfileRow extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-
-  const _ProfileRow(
-      {required this.icon, required this.title, required this.subtitle});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-            color: AgroColors.sky, borderRadius: BorderRadius.circular(8)),
-        child: Icon(icon, color: AgroColors.field),
-      ),
-      title: Text(title, style: Theme.of(context).textTheme.titleMedium),
-      subtitle: Text(subtitle),
     );
   }
 }

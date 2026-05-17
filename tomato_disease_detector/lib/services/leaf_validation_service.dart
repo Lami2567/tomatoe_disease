@@ -16,6 +16,7 @@ class LeafValidationResult {
 
 class LeafValidationService {
   static const _minLeafConfidence = 0.55;
+  static const _minPlantFoodComboConfidence = 0.65;
 
   Future<LeafValidationResult> validateTomatoLeaf(XFile image) async {
     if (kIsWeb) {
@@ -29,7 +30,8 @@ class LeafValidationService {
       final labels =
           await labeler.processImage(InputImage.fromFilePath(image.path));
       var bestLeafConfidence = 0.0;
-      var bestFruitConfidence = 0.0;
+      var bestPlantConfidence = 0.0;
+      var bestFoodOrVegetableConfidence = 0.0;
       final labelNames = <String>[];
 
       for (final label in labels) {
@@ -40,17 +42,23 @@ class LeafValidationService {
         if (_isLeafLabel(text) && label.confidence > bestLeafConfidence) {
           bestLeafConfidence = label.confidence;
         }
-        if (_isFruitOrFoodLabel(text) &&
-            label.confidence > bestFruitConfidence) {
-          bestFruitConfidence = label.confidence;
+        if (_isPlantLabel(text) && label.confidence > bestPlantConfidence) {
+          bestPlantConfidence = label.confidence;
+        }
+        if (_isFoodOrVegetableLabel(text) &&
+            label.confidence > bestFoodOrVegetableConfidence) {
+          bestFoodOrVegetableConfidence = label.confidence;
         }
       }
 
-      final isLeaf = bestLeafConfidence >= _minLeafConfidence &&
-          bestLeafConfidence >= bestFruitConfidence;
+      final isLeaf = bestLeafConfidence >= _minLeafConfidence ||
+          (bestPlantConfidence >= _minLeafConfidence &&
+              bestFoodOrVegetableConfidence >= _minPlantFoodComboConfidence);
       return LeafValidationResult(
         isLeaf: isLeaf,
-        confidence: bestLeafConfidence,
+        confidence: bestLeafConfidence > bestPlantConfidence
+            ? bestLeafConfidence
+            : bestPlantConfidence,
         labels: labelNames,
       );
     } finally {
@@ -60,6 +68,7 @@ class LeafValidationService {
 
   bool _isLeafLabel(String text) {
     return text.contains('leaf') ||
+        text.contains('leaves') ||
         text.contains('plant') ||
         text.contains('vegetation') ||
         text.contains('flora') ||
@@ -67,9 +76,17 @@ class LeafValidationService {
         text.contains('herb');
   }
 
-  bool _isFruitOrFoodLabel(String text) {
-    return text.contains('fruit') ||
-        text.contains('vegetable') ||
+  bool _isPlantLabel(String text) {
+    return text.contains('plant') ||
+        text.contains('leaf') ||
+        text.contains('leaves') ||
+        text.contains('vegetation') ||
+        text.contains('flora') ||
+        text.contains('herb');
+  }
+
+  bool _isFoodOrVegetableLabel(String text) {
+    return text.contains('vegetable') ||
         text.contains('food') ||
         text.contains('tomato') ||
         text.contains('produce');

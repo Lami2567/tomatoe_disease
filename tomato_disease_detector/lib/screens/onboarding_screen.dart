@@ -113,11 +113,12 @@ class _BrandMark extends StatelessWidget {
           width: 38,
           height: 38,
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.16),
+            color: Colors.white.withValues(alpha: 0.92),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: color.withValues(alpha: 0.34)),
           ),
-          child: Icon(Icons.eco_rounded, color: color, size: 22),
+          clipBehavior: Clip.antiAlias,
+          child: Image.asset('assets/playstore.png', fit: BoxFit.cover),
         ),
         const SizedBox(width: 10),
         Text(

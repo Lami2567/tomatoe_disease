@@ -141,18 +141,14 @@ class _SignInPanel extends StatelessWidget {
                       child: CircularProgressIndicator(
                           strokeWidth: 2, color: Colors.white),
                     )
-                  : const Icon(Icons.g_mobiledata_rounded, size: 28),
+                  : Image.asset(
+                      'assets/images/icons8-google-100.png',
+                      width: 22,
+                      height: 22,
+                    ),
               label: const Text('Continue with Google'),
             ),
             const SizedBox(height: 14),
-            Text(
-              'Backend: ${ApiService.baseUrl}',
-              textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(fontSize: 12),
-            ),
           ],
         ),
       ),

@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.example.tomato_disease_detector"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36
     ndkVersion = "29.0.14206865"
 
     compileOptions {

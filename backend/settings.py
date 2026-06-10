@@ -4,8 +4,11 @@ Django settings for backend project - ACTIVE configuration (used by manage.py)
 import os
 from pathlib import Path
 from datetime import timedelta
+import dj_database_url
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / '.env')
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-replace-with-env-key')
 DEBUG = os.getenv('DJANGO_DEBUG', 'True').lower() == 'true'
@@ -54,8 +57,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
+DATABASE_URL = os.getenv('DATABASE_URL')
 DATABASES = {
-    'default': {
+    'default': dj_database_url.parse(
+        DATABASE_URL,
+        conn_max_age=600,
+        ssl_require=True,
+    )
+    if DATABASE_URL
+    else {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }

@@ -38,7 +38,7 @@ class ApiService {
   static final String baseUrl = _normalizeBaseUrl(
     _configuredBaseUrl.isNotEmpty
         ? _configuredBaseUrl
-        : 'https://eligible-henriette-laneglo-afa9e80d.koyeb.app/api',
+        : 'https://tomatoe-disease.onrender.com/api',
   );
 
   static String _normalizeBaseUrl(String url) {

@@ -11,7 +11,7 @@ class AuthService extends ChangeNotifier {
   static const _webClientId = String.fromEnvironment(
     'GOOGLE_WEB_CLIENT_ID',
     defaultValue:
-        '987949308230-nk5l7n528fsgr1i226t5j6jv47im8odh.apps.googleusercontent.com',
+        '987949308230-m4ant4l6eui1hii5mgovk7ouem12igva.apps.googleusercontent.com',
   );
 
   final ApiService _api = ApiService();

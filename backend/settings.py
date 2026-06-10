@@ -100,7 +100,7 @@ CORS_ALLOWED_ORIGINS = [
 
 GOOGLE_OAUTH_CLIENT_ID = os.getenv(
     'GOOGLE_OAUTH_CLIENT_ID',
-    '987949308230-nk5l7n528fsgr1i226t5j6jv47im8odh.apps.googleusercontent.com',
+    '987949308230-m4ant4l6eui1hii5mgovk7ouem12igva.apps.googleusercontent.com',
 )
 
 # REST Framework
